@@ -1,0 +1,20 @@
+{
+  "name": "shitty-router",
+  "version": "0.1.0",
+  "author": "Ian Cox <iancox@dyselon.com>,
+  "description": "Another simple regular expression based router",
+  "main": "./lib/shitty-router.js"
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/dyselon/shitty-router"
+  },
+  "keywords": [
+    "router"
+  ],
+  "devDependencies": {
+    "mocha": "1.1.x"
+  },
+  "license": "MIT",
+  "engine": ">=0.6.14"
+}
+  
