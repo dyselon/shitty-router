@@ -6,7 +6,36 @@ I needed a really simple url router, that I could make more than one of. All of 
 Usage
 -----
 
-Samples here!
+``` coffeescript
+ShittyRouter = require 'shitty-router'
+
+myrouter = new ShittyRouter
+
+# .addRouteRegex takes a regular expression, the names of any parameters,
+# and the callback to fire if the expression is matched
+#
+# The callback takes first any parameters specified in regular expression,
+# and second, additional information provided by the matcher
+
+myrouter.addRouteRegex /\/user\/(?:([^\/]+?))$/, ["userid"], (params, extras) ->
+  extras.res.end("Matched to /user/" + params.userid)
+
+# You can skip the parameters if there aren't any
+
+myrouter.addRouteRegex /\/test/, (params, extras) ->
+  extras.res.end("Matched to /test")
+
+# .match returns true if it matches any routes, and false if it doesn't
+# it also calls the route's callback. You can pass that callback an object with
+# anything it needs to know about.
+server = http.createServer (req, res) ->
+  res.end "404'd!" if not myrouter.match req.url, { req: req, res: res }
+server.listen 8080
+```
+
+Todo
+----
+I'll add the ability to specify routes in the form of "/user/:id" soon I hope.
 
 License
 -------
