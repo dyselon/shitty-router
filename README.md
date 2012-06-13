@@ -11,6 +11,12 @@ ShittyRouter = require 'shitty-router'
 
 myrouter = new ShittyRouter
 
+# .addRoute is the function you're looking for
+myrouter.addRoute '/posts', (params, extras) ->
+  extras.res.end("Matched to /posts")
+myrouter.addRoute '/posts/:id', (params, extras) ->
+  extras.res.end("Matched to /posts/" + params.id)
+
 # .addRouteRegex takes a regular expression, the names of any parameters,
 # and the callback to fire if the expression is matched
 #
@@ -35,7 +41,7 @@ server.listen 8080
 
 Todo
 ----
-I'll add the ability to specify routes in the form of "/user/:id" soon I hope.
+I should also add method filtering. I guess that's kind of important, huh?
 
 License
 -------

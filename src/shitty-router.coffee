@@ -11,6 +11,14 @@ exports = module.exports = class ShittyRouter
       params: params
       callback: callback
       
+  addRoute: (str, callback) ->
+    # Swiped this regex from express. Thanks!
+    params = []
+    newstr = str.replace /(\/)?(\.)?:(\w+)(?:(\(.*?\)))?(\?)?/g, (_a, slash, _b, key, _c, _d) ->
+      params.push key
+      slash + "([^/.]+?)"
+    @addRouteRegex new RegExp('^' + newstr + '$'), params, callback
+      
   match: (path, extraparams) ->
     for route in @routes
       results = route.match.exec(path)
@@ -18,6 +26,7 @@ exports = module.exports = class ShittyRouter
         params = {}
         for param, i in route.params
           params[param] = results[i+1]
-        route.callback(params, extraparams)
+        if route.callback?
+          route.callback(params, extraparams)
         return true
     return false
