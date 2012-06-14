@@ -2,7 +2,7 @@ exports = module.exports = class ShittyRouter
   constructor: () ->
     @routes = []
 
-  addRouteRegex: (match, params, callback) ->
+  addRouteRegex: (method, match, params, callback) ->
     if not callback?
       callback = params
       params = null
@@ -10,23 +10,25 @@ exports = module.exports = class ShittyRouter
       match: match
       params: params
       callback: callback
+      method: method
       
-  addRoute: (str, callback) ->
+  addRoute: (method, str, callback) ->
     # Swiped this regex from express. Thanks!
     params = []
     newstr = str.replace /(\/)?(\.)?:(\w+)(?:(\(.*?\)))?(\?)?/g, (_a, slash, _b, key, _c, _d) ->
       params.push key
       slash + "([^/.]+?)"
-    @addRouteRegex new RegExp('^' + newstr + '$'), params, callback
+    @addRouteRegex method, new RegExp('^' + newstr + '$'), params, callback
       
-  match: (path, extraparams) ->
+  match: (method, path, extraparams) ->
     for route in @routes
-      results = route.match.exec(path)
-      if results?
-        params = {}
-        for param, i in route.params
-          params[param] = results[i+1]
-        if route.callback?
-          route.callback(params, extraparams)
-        return true
+      if route.method == "ANY" or (route.method instanceof Array and method in route.method) or method == route.method
+        results = route.match.exec(path)
+        if results?
+          params = {}
+          for param, i in route.params
+            params[param] = results[i+1]
+          if route.callback?
+            route.callback(params, extraparams)
+          return true
     return false

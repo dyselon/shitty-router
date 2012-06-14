@@ -7,14 +7,15 @@ Usage
 -----
 
 ``` coffeescript
+http = require 'http'
 ShittyRouter = require 'shitty-router'
 
 myrouter = new ShittyRouter
 
 # .addRoute is the function you're looking for
-myrouter.addRoute '/posts', (params, extras) ->
+myrouter.addRoute "GET", '/posts', (params, extras) ->
   extras.res.end("Matched to /posts")
-myrouter.addRoute '/posts/:id', (params, extras) ->
+myrouter.addRoute "GET", '/posts/:id', (params, extras) ->
   extras.res.end("Matched to /posts/" + params.id)
 
 # .addRouteRegex takes a regular expression, the names of any parameters,
@@ -23,25 +24,21 @@ myrouter.addRoute '/posts/:id', (params, extras) ->
 # The callback takes first any parameters specified in regular expression,
 # and second, additional information provided by the matcher
 
-myrouter.addRouteRegex /\/user\/(?:([^\/]+?))$/, ["userid"], (params, extras) ->
+myrouter.addRouteRegex "GET", /\/user\/(?:([^\/]+?))$/, ["userid"], (params, extras) ->
   extras.res.end("Matched to /user/" + params.userid)
 
 # You can skip the parameters if there aren't any
 
-myrouter.addRouteRegex /\/test/, (params, extras) ->
+myrouter.addRouteRegex "GET", /\/test/, (params, extras) ->
   extras.res.end("Matched to /test")
 
 # .match returns true if it matches any routes, and false if it doesn't
 # it also calls the route's callback. You can pass that callback an object with
 # anything it needs to know about.
 server = http.createServer (req, res) ->
-  res.end "404'd!" if not myrouter.match req.url, { req: req, res: res }
+  res.end "404'd!" if not myrouter.match req.method, req.url, { req: req, res: res }
 server.listen 8080
 ```
-
-Todo
-----
-I should also add method filtering. I guess that's kind of important, huh?
 
 License
 -------
